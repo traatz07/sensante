@@ -13,4 +13,4 @@ Projet utilisant le Machine Learning pour analyser les symptomes des patients.
 - notebooks/
 
 ## Auteur
-Etudiante L2 GLSI - ESP UCAD
+Khadijatou Oumy Traore L2 GLSI-A - ESP UCAD
