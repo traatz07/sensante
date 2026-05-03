@@ -3,9 +3,7 @@ from pydantic import BaseModel
 import joblib
 import numpy as np
 
-# =========================
-# Charger les fichiers ML
-# =========================
+
 
 model = joblib.load("models/model.pkl")
 
@@ -14,23 +12,16 @@ encoder_region = joblib.load("models/encoder_region.pkl")
 
 feature_cols = joblib.load("models/feature_cols.pkl")
 
-# =========================
-# Créer l'application
-# =========================
 
 app = FastAPI()
 
-# =========================
-# Route accueil
-# =========================
+
 
 @app.get("/")
 def home():
     return {"message": "API SenSante active"}
 
-# =========================
-# Schéma patient
-# =========================
+
 
 class PatientData(BaseModel):
     age: int
@@ -44,18 +35,16 @@ class PatientData(BaseModel):
     nausee: bool
     region: str
 
-# =========================
-# Endpoint prediction
-# =========================
+
 
 @app.post("/predict")
 def predict(data: PatientData):
 
-    # Encoder les données
+    
     sexe_encoded = encoder_sexe.transform([data.sexe])[0]
     region_encoded = encoder_region.transform([data.region])[0]
 
-    # Construire les features
+    
     features = [[
         data.age,
         sexe_encoded,
@@ -69,13 +58,13 @@ def predict(data: PatientData):
         region_encoded
     ]]
 
-    # Faire la prédiction
+    
     prediction = model.predict(features)[0]
 
-    # Probabilités
+    
     probabilities = model.predict_proba(features)[0]
 
-    # Construire réponse
+    
     resultats = {}
 
     for classe, proba in zip(model.classes_, probabilities):
