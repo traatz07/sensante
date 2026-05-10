@@ -16,7 +16,6 @@ feature_cols = joblib.load("models/feature_cols.pkl")
 app = FastAPI()
 
 
-
 @app.get("/")
 def home():
     return {"message": "API SenSante active"}
@@ -34,6 +33,7 @@ class PatientData(BaseModel):
     frissons: bool
     nausee: bool
     region: str
+
 
 
 
@@ -58,13 +58,15 @@ def predict(data: PatientData):
         region_encoded
     ]]
 
-    
+
+ 
     prediction = model.predict(features)[0]
 
     
     probabilities = model.predict_proba(features)[0]
 
-    
+
+
     resultats = {}
 
     for classe, proba in zip(model.classes_, probabilities):
