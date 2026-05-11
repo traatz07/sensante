@@ -137,8 +137,6 @@ print("\nModele et encodeurs sauvegardes dans models/")
 
 
 model_loaded = joblib.load("models/model.pkl")
-
-
 le_sexe_loaded = joblib.load("models/encoder_sexe.pkl")
 le_region_loaded = joblib.load("models/encoder_region.pkl")
 
@@ -188,4 +186,19 @@ print(f"Diagnostic predit : {diagnostic}")
 print("\nProbabilites :")
 
 for classe, proba in zip(model_loaded.classes_, probas):
-    print(f"{classe} : {proba:.2%}")
+    print(f"{classe} : {proba:.2%}") 
+
+
+print("\nImportance des features :")
+
+importances = model.feature_importances_
+
+for name, imp in sorted(
+    zip(feature_cols, importances),
+    key=lambda x: x[1],
+    reverse=True
+):
+    print(f"{name:20s} : {imp:.3f}") 
+
+
+
