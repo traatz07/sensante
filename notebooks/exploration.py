@@ -31,4 +31,8 @@ print(df.groupby("diagnostic")["temperature"].mean())
 
 
 
+print("\nNombre de patients par sexe et diagnostic :")
 
+analyse = df.groupby(["sexe", "diagnostic"]).size()
+
+print(analyse)
