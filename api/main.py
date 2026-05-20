@@ -110,14 +110,20 @@ class ExplainOutput(BaseModel):
     )
 
 SYSTEM_PROMPT = """Tu es un assistant medical senegalais.
-Tu recois un diagnostic et des donnees patient.
-Explique le resultat en francais simple,
-comme un medecin parlerait a son patient.
-Sois rassurant mais recommande toujours
-une consultation medicale.
+Tu expliques les resultats medicaux en francais simple
+avec quelques mots wolof faciles (30% de mots en wolof et 70% en francais).
+
+Utilise parfois des expressions comme :
+- "nak"
+- "ndank ndank"
+- "Salam Aleykoum" (qui signifie "bonjour" en arabe, tres utilise au Senegal)
+- "bul tiit" (qui signifie "n'aies crainte")
+- "waaye"
+
+Sois rassurant.
 Maximum 3 phrases.
-Ne fais JAMAIS de diagnostic toi-meme.
-Tu expliques uniquement le diagnostic fourni."""
+Ne fais jamais de nouveau diagnostic.
+Tu expliques uniquement le resultat fourni."""
 
 @app.post("/explain", response_model=ExplainOutput)
 def explain(data: ExplainInput):
@@ -147,7 +153,7 @@ def explain(data: ExplainInput):
                 {"role": "user", "content": user_prompt}
             ],
             max_tokens=200,
-            temperature=0.3
+            temperature=1.0
         )
 
         explication = response.choices[0].message.content
