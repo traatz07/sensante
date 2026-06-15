@@ -124,12 +124,8 @@ os.makedirs("models", exist_ok=True)
 
 
 joblib.dump(model, "models/model.pkl")
-
-
 joblib.dump(le_sexe, "models/encoder_sexe.pkl")
 joblib.dump(le_region, "models/encoder_region.pkl")
-
-
 joblib.dump(feature_cols, "models/feature_cols.pkl")
 
 print("\nModele et encodeurs sauvegardes dans models/")
@@ -176,8 +172,6 @@ features = [[
 
 
 diagnostic = model_loaded.predict(features)[0]
-
-
 probas = model_loaded.predict_proba(features)[0]
 
 print("\n===== RESULTAT PREDICTION =====")
@@ -199,6 +193,81 @@ for name, imp in sorted(
     reverse=True
 ):
     print(f"{name:20s} : {imp:.3f}") 
+
+
+# ==============================
+# EXERCICE 2 - TESTS PATIENTS
+# ==============================
+
+patients_test = [
+
+    {
+        'nom': 'Jeune sans symptomes',
+        'age': 19,
+        'sexe': 'F',
+        'temperature': 36.7,
+        'tension_sys': 120,
+        'toux': False,
+        'fatigue': False,
+        'maux_tete': False,
+        'frissons': False,
+        'nausee': False,
+        'region': 'Dakar'
+    },
+
+    {
+        'nom': 'Adulte forte fievre',
+        'age': 35,
+        'sexe': 'M',
+        'temperature': 40.1,
+        'tension_sys': 100,
+        'toux': True,
+        'fatigue': True,
+        'maux_tete': True,
+        'frissons': True,
+        'nausee': True,
+        'region': 'Dakar'
+    },
+
+    {
+        'nom': 'Patient age avec toux',
+        'age': 72,
+        'sexe': 'M',
+        'temperature': 38.2,
+        'tension_sys': 135,
+        'toux': True,
+        'fatigue': True,
+        'maux_tete': False,
+        'frissons': False,
+        'nausee': False,
+        'region': 'Saint-Louis'
+    }
+]
+
+print("\n===== TEST DES PATIENTS FICTIFS =====")
+
+for patient in patients_test:
+
+    sexe_enc = le_sexe_loaded.transform([patient['sexe']])[0]
+    region_enc = le_region_loaded.transform([patient['region']])[0]
+
+    features = [[
+        patient['age'],
+        sexe_enc,
+        patient['temperature'],
+        patient['tension_sys'],
+        int(patient['toux']),
+        int(patient['fatigue']),
+        int(patient['maux_tete']),
+        int(patient['frissons']),
+        int(patient['nausee']),
+        region_enc
+    ]]
+
+    diagnostic = model_loaded.predict(features)[0]
+
+    print(f"\nPatient : {patient['nom']}")
+    print(f"Diagnostic : {diagnostic}")
 
 
 

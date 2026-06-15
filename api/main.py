@@ -40,9 +40,8 @@ app.add_middleware(
 
 
 @app.get("/")
-def home():
-    return {"message": "API SenSante active"}
-
+def serve_frontend():
+    return FileResponse("frontend/index.html")
 
 
 class PatientData(BaseModel):
@@ -58,6 +57,15 @@ class PatientData(BaseModel):
     region: str
 
 
+@app.get("/model-info")
+def model_info():
+
+    return {
+        "type_modele": "RandomForestClassifier",
+        "nombre_arbres": model.n_estimators,
+        "classes": list(model.classes_),
+        "nombre_features": len(feature_cols)
+    }
 
 
 @app.post("/predict")
@@ -153,7 +161,7 @@ def explain(data: ExplainInput):
                 {"role": "user", "content": user_prompt}
             ],
             max_tokens=200,
-            temperature=1.0
+            temperature=0.3
         )
 
         explication = response.choices[0].message.content
@@ -169,4 +177,10 @@ def explain(data: ExplainInput):
             modele_llm="erreur"
         )
     return ExplainOutput(explication=explication)
+
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+# Servir le frontend comme fichier statique
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
